@@ -1,0 +1,25 @@
+{
+  "name": "serverless-toggle-vpc-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "deploy": "sls deploy --stage prod",
+    "deploy:dev": "sls deploy"
+  },
+  "keywords": [
+    "serverless",
+    "lambda",
+    "vpc lambda"
+  ],
+  "repository": {
+    "url": "https://github.com/hoang-innomizetech/serverless-toggle-vpc-example"
+  },
+  "author": "Hoang <hoang@innomizetech.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-offline": "5.12.0",
+    "serverless-secrets-plugin": "0.1.0",
+    "serverless-vpc-plugin": "0.9.3"
+  }
+}

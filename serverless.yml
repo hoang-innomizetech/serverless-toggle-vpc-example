@@ -1,0 +1,52 @@
+service: serverless-toggle-vpc-example
+
+frameworkVersion: '>=1.1.0 <2.0.0'
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  vpc: ${self:custom.vpc.${self:provider.stage}}
+
+custom:
+  vpc:
+    dev:
+      # If you don't want to run Lambda under a Vpc, then just give it an empty array
+      securityGroupIds: []
+      subnetIds: []
+      
+    # You can add more stages here
+
+    prod:
+      securityGroupIds:
+        Fn::Split:
+          - ','
+          - ${file(secrets.${self:provider.stage}.yml):VPC_SECURITY_GROUP_IDS}
+      subnetIds:
+        Fn::Split:
+          - ','
+          - ${file(secrets.${self:provider.stage}.yml):VPC_SUBNET_IDS}
+
+  warmup:
+    cleanFolder: true
+    memorySize: 256
+    timeout: 10
+    prewarm: true
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: /
+          method: get
+
+plugins:
+ - serverless-offline
+ - serverless-secrets-plugin
+
+# Those plugins can create your Vpc automatically or discover existing
+# Vpc from your AWS account
+#  - serverless-vpc-plugin
+#  - serverless-vpc-discovery
